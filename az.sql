@@ -511,6 +511,8 @@ CREATE TABLE `tbl_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+
+
 CREATE TABLE `tbl_order_detail` (
   `int_order_detail_id` int(11) NOT NULL AUTO_INCREMENT,
   `int_order_id` int(11) NOT NULL,
@@ -526,6 +528,8 @@ CREATE TABLE `tbl_order_detail` (
    FOREIGN KEY(`int_product_id`) REFERENCES product(`id`),
    FOREIGN KEY(`int_shop_images_id`) REFERENCES shop_images(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 
 
 
