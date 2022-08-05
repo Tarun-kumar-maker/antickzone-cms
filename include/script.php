@@ -154,12 +154,15 @@
                     contentType: false,
                     processData: false,
                     success:function(data){
-                        if(data == "1"){
+                        if((arr[0] == 'checkout') || (arr[0] == "1") ){
                             swal("Good Job!", "Logged In Successfuly!", "success").then((value) => {
-                                // window.location("index.php");
+                            if(arr[0] == 'checkout'){
+                                window.location.href = "cart.php?intUserId="+arr[1]+"&flag=user";
+                            }
+                            else{
                                 location.reload();
+                            }
                                 $('#login_modal').modal('hide');
-                                // window.location.href = "index.php";
                             });;
                             
                         }else{

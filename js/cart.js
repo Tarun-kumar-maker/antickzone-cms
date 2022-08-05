@@ -4,7 +4,7 @@ var total_cart_amt = document.getElementById('total_cart_amt');
 var discountCode = document.getElementById('discount_code1');
 
 
-const decreaseNumber = (incdec, itemprice) => {
+const decreaseNumber = (incdec, itemprice, productprice,intcartitemid) => {
     var itemval = document.getElementById(incdec);
     var itemprice = document.getElementById(itemprice);
     console.log(itemprice.innerHTML);
@@ -15,13 +15,24 @@ const decreaseNumber = (incdec, itemprice) => {
         itemval.value = parseInt(itemval.value) - 1;
         itemval.style.background = '#fff';
         itemval.style.color = '#000';
-        itemprice.innerHTML = parseInt(itemprice.innerHTML) - 15;
-        product_total_amt.innerHTML = parseInt(product_total_amt.innerHTML) - 15;
-        total_cart_amt.innerHTML = parseInt(product_total_amt.innerHTML) + parseInt(shipping_charge.innerHTML);
+        itemprice.innerHTML = parseInt(itemprice.innerHTML) - productprice;
+        product_total_amt.innerHTML = parseInt(product_total_amt.innerHTML) - productprice;
+        gst = (parseInt(product_total_amt.innerHTML)*18)/100;
+        total_cart_amt.innerHTML = parseInt(product_total_amt.innerHTML) + parseInt(gst);    
+        $.ajax({
+            type: 'POST',
+            url: 'updatecart.php',
+            data: { intitemid: intcartitemid,
+                    quantity: itemval.value,
+                    totalamount: parseInt(itemprice.innerHTML)},
+            success: function(response) {
+               
+            }
+        });
     }
 }
 
-const increaseNumber = (incdec, itemprice) => {
+const increaseNumber = (incdec, itemprice, productprice, intcartitemid) => {
     var itemval = document.getElementById(incdec);
     var itemprice = document.getElementById(itemprice);
     if (itemval.value >= 5) {
@@ -32,9 +43,20 @@ const increaseNumber = (incdec, itemprice) => {
     } else {
         itemval.value = parseInt(itemval.value) + 1;
         // add same price 
-        itemprice.innerHTML = parseInt(itemprice.innerHTML) + 15;
-        product_total_amt.innerHTML = parseInt(product_total_amt.innerHTML) + 15;
-        total_cart_amt.innerHTML = parseInt(product_total_amt.innerHTML) + parseInt(shipping_charge.innerHTML);
+        itemprice.innerHTML = parseInt(itemprice.innerHTML) + parseInt(productprice);
+        product_total_amt.innerHTML = parseInt(product_total_amt.innerHTML) +  parseInt(productprice);
+        gst = (parseInt(product_total_amt.innerHTML)*18)/100;
+        total_cart_amt.innerHTML = parseInt(product_total_amt.innerHTML) + parseInt(gst);
+        $.ajax({
+            type: 'POST',
+            url: 'updatecart.php',
+            data: { intitemid: intcartitemid,
+                    quantity: itemval.value,
+                    totalamount: parseInt(itemprice.innerHTML)},
+            success: function(response) {
+               
+            }
+        });
     }
 }
 
