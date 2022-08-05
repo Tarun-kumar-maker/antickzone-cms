@@ -2,10 +2,23 @@
     include "include/check_login.php";
     include "include/connection.php";
     $cat_id = $table = "";
+    $intUserId = "";
+    $flag = 'session';
+    if (!session_id()) {
+        session_start();
+    }
+	$session_id = session_id();
     if(isset($_GET['id'])){
         $cat_id = $_GET['id'];
         $table = $_GET['table'];
         $category = $_GET['category'];
+    }
+    if(!empty($_SESSION['userId'])){
+        $intUserId = $_SESSION['userId'];
+        $flag = 'user';
+    }
+    else{
+        $intUserId = $session_id;
     }
 ?>
 
@@ -38,7 +51,8 @@
     ?>
 
 
-    
+<input type="hidden" id ='productid' value=<?= $cat_id ?> data-tables=<?=$table ?> />
+ 
 
         
     <div class="outer-container">
@@ -315,26 +329,21 @@
                             </div>
 
                             <div class="contact-buttons">
-                                <?php
-                                    if($flag == 1){
-                                ?>
+                               
                                         <input type="hidden" id="add_to_cart_hidden" value="<?=$_SESSION['email']?>">
-                                        <a id="whatsapp_link" target="_blank" href="javascript:void()" class="text-decoration-none">
+                                        
+                                        <a target="_blank" href="cart.php?intUserId=<?=$intUserId?>&flag=<?=$flag?>" id="Add" class="text-decoration-none">
                                             <button class="btn btn-dark add-to-cart mt-5 mb-3">
                                                 <span class="ms-3">Add To Cart</span>
                                             </button>
                                         </a>
-                                <?php
-                                    }else{
-                                ?>
-                                        <a data-bs-toggle="modal" data-bs-target="#login_modal" target="_blank" href="javascript:void()" class="text-decoration-none">
+                                
+                                        <!-- <a target="_blank" href="cart.php?intSessionId=<?=$session_id?>" id = "Add1" class="text-decoration-none">
                                             <button class="btn btn-dark add-to-cart mt-5 mb-3">
                                                 <span class="ms-3">Add To Cart</span>
                                             </button>
-                                        </a>
-                                <?php
-                                    }
-                                ?>
+                                        </a> -->
+                             
 
 
                                 <a href="https://wa.me/+911203180706?text=Hello,%20I%20want%20to%20customise%20one%20of%20your%20products" target="_blank" class="text-decoration-none">
@@ -937,6 +946,7 @@
                         $('.image-title').html(result['img_category']);
                     }
                     var discount_price = Math.round((result['price']*100)/80);
+                    $('#productid').val(result['id']);
                     $('#actual_price').html(discount_price);
                     $('#disc_price').html(result['price']);
                     $('.image-description').html(result['description']);
@@ -963,6 +973,7 @@
                 data:{id:img_id, table:table},
                 success:function(data){
                     var result = JSON.parse(data);
+                    $('#productid').val(result['id']);
                     console.log(result);
                     var discount_price = Math.round((result['price']*100)/80);
                     if($('#table_name').val() == "product"){
@@ -1225,6 +1236,24 @@
             $('.custom-sign-main-section .custom-sign-details .content-div .package-details').css({"display":"none"});
             $('.custom-sign-main-section .custom-sign-details .content-div .installation-guide').css({"display":"block"});
         })
+         $('#Add').on('click', function(){
+            var userid = '<?= (!empty($intUserId)? $intUserId : $session_id ) ?>'; 
+            var flag = '<?= $flag ?>';
+            var productid = $("#productid").val();
+            var table = $("#productid").attr('data-tables');
+
+            $.ajax({
+                type: 'POST',
+                url: 'save.php',
+                data: { UserId: userid,
+                        ProductId: productid,
+                        tablename: table,
+                        flags: flag },
+                success: function(response) {
+                   
+                }
+            });
+        });
     </script>
 </body>
 
